@@ -5,59 +5,17 @@
 @{
     ViewBag.Title = "index";
 }
+<script src="~/Scripts/Email-Retrieve.js"></script>
 
-<h2>EmailListView</h2>
 <body>
-    <div class="row">
-        <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-                <input id="search_Bar_Text" type="text" class="form-control" placeholder="Search">
-            </div>
-            <button id="search_button" type="submit" onclick="" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-        </form>
+    <div class="panel panel-default col-sm-8">
+        <div class="panel-body">
+        </div>
     </div>
-    <div id="emailListDisplay" class="list-group-item">
-    </div>
-
+    <ul id="emailListDisplay" class="list-group col-sm-4">
+    </ul>
 </body>
 
 
-<script>
-    $(document).ready(function () {
-        getMailList();
-    });
-</script>
 
 
-<script>
-    function getMailList() {
-        $.ajax({
-            url: '/email/getmail',
-            type: 'POST',
-            datatype: 'json'
-        }).done(function (data) {
-            var list = data;
-            $.each(list, function (index, item) {
-                $('#emailListDisplay').append("<h3>Message :" + index);
-                $('#emailListDisplay').append("<li> Subject : " + item.Subject + "</li>");
-                $('#emailListDisplay').append("<li> From : " + item.From + "</li>");
-                $('#emailListDisplay').append("<br>");
-            })
-
-        });
-    }
-</script>
-
-<script>
-    $(document).ready(
-    function searchBarText() {
-        $("#search_button").click(function () {
-            $.ajax({
-                url: '',
-                type:'POST'
-            })
-            alert($("#search_Bar_Text").val());
-        });
-    }
-    )
-</script>

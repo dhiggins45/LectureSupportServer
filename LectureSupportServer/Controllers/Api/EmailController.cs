@@ -21,6 +21,7 @@ namespace LectureSupportServer.Controllers.Api
         private List<Message> rawDataList = new List<Message>();
         private List<FileModel> mailList = new List<FileModel>();
         private List<string> mailFromList = new List<string>();
+        private GmailService gmailService;
 
         public ActionResult index()
         {
@@ -29,31 +30,38 @@ namespace LectureSupportServer.Controllers.Api
 
         [Authorize]
         [HttpPost]
-        public async Task<JsonResult> getMail(CancellationToken cancellationToken)
+        public async Task<ActionResult>  getMail(CancellationToken cancellationToken)
         {
-            ViewBag.Message = "Your drive page.";
-
             var result = await new AuthorizationCodeMvcApp(this, new AppAuthFlowMetaData()).
                     AuthorizeAsync(cancellationToken);
 
-            //   if (result.Credential == null)
-            //      return new RedirectResult(result.RedirectUri);
+            if (result.Credential == null)
+                return new RedirectResult(result.RedirectUri);
 
-            var gmailService = new GmailService(new BaseClientService.Initializer
+            gmailService = new GmailService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = result.Credential,
                 ApplicationName = "Lecture Support Server"
             });
 
-
             var messageFeed = gmailService.Users.Messages.List("me").Execute().Messages;
+            int i = 0;
 
             foreach (var email in messageFeed)
             {
-                var r = new UsersResource.MessagesResource.GetRequest(gmailService, "me", email.Id);
-                r.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
-                var messg = r.Execute();
-                MetaDatalist.Add(messg);
+                
+                if (i < 5)
+                {
+                    var r = new UsersResource.MessagesResource.GetRequest(gmailService, "me", email.Id);
+                    r.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+                    var messg = r.Execute();
+                    MetaDatalist.Add(messg);
+                    i++;
+                }
+                if (i >= 5)
+                {
+                    break;
+                }
             }
 
 
@@ -68,7 +76,7 @@ namespace LectureSupportServer.Controllers.Api
             var convertMessageForHtml = ConvertedMessage;
             
     */
-            
+
 
             //items.Id = msg.Id;
             foreach (var lbl in MetaDatalist)
@@ -83,12 +91,8 @@ namespace LectureSupportServer.Controllers.Api
                     mailList.Add(items);
                 }
             }
-            
-
-
 
             return Json(mailList, JsonRequestBehavior.AllowGet);
-
         }
     }
 }
