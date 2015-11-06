@@ -1,0 +1,14 @@
+﻿
+<div>
+    <button class="btn-primary" id="mailButton">Mail</button>
+</div>
+
+<script>
+    $("#mailButton").click(function () {
+        alert("Hello");
+        $.ajax({
+            url: '/api/email/retrieveMail',
+            type: 'POST'
+        });
+  });
+</script>

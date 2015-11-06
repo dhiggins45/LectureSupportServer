@@ -1,0 +1,38 @@
+﻿@{
+
+    ViewBag.Title = "Index";
+}
+
+
+<div id="emailDisplay" class="">
+    Hello
+    <div class="container-fluid col-md-7">
+        <div class="calendar">
+            <div id='calendar'></div>
+        </div>
+    </div>
+    <div id="messages">
+        <button id="btn">
+            Activate
+        </button>
+    </div>
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#btn").click(function () {
+            $.ajax({
+                url: '/api/email/retrieveMail',
+                method: 'POST',
+                contentType: "application/json;charset=utf-8",
+                error: function (data) {
+                    alert('Problem with request');
+                }
+
+            });
+        });
+        
+    });
+</script>
+
